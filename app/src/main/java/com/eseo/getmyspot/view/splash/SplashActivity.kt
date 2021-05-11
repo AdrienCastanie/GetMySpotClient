@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatDelegate
-import com.eseo.getmyspot.R
 import com.eseo.getmyspot.data.preferences.LocalPreferences
 import com.eseo.getmyspot.databinding.ActivitySplashBinding
 import com.eseo.getmyspot.view.main.MainActivity
