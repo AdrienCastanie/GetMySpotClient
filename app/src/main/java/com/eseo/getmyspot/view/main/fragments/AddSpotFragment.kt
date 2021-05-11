@@ -5,8 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.eseo.getmyspot.R
+import com.eseo.getmyspot.data.preferences.LocalPreferences
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class AddSpotFragment : Fragment() {
 
@@ -24,7 +25,19 @@ class AddSpotFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        Toast.makeText(requireContext(), "Add_Spot", Toast.LENGTH_SHORT).show()
+        if (context?.let {
+                LocalPreferences.getInstance(it).getStringValue(LocalPreferences.PSEUDO)
+            } == null) {
+            context?.let {
+                MaterialAlertDialogBuilder(it).setTitle(getString(R.string.require_connection_title))
+                    .setCancelable(false)
+                    .setMessage(R.string.require_connection_message)
+                    .setPositiveButton(getString(R.string.log_in)) { dialog, which ->
+                        // TODO : faire la redirection vers l'activity de connection
+                    }
+                    .show()
+            }
+        }
     }
 
     companion object {

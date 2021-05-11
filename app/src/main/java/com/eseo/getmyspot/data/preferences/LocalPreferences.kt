@@ -16,6 +16,7 @@ class LocalPreferences private constructor(context: Context) {
     companion object {
         const val THEME = "theme"
         const val LANGUAGE = "language"
+        const val PSEUDO = "pseudo"
 
         private var INSTANCE: LocalPreferences? = null
 
