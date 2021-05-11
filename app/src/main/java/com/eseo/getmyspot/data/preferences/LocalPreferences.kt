@@ -43,7 +43,7 @@ class LocalPreferences private constructor(context: Context) {
     }
 
     // get string data (for language)
-    fun getStringStringValue(key: String): String? {
+    fun getStringValue(key: String): String? {
         return sharedPreferences.getString(key, null)
     }
 }
