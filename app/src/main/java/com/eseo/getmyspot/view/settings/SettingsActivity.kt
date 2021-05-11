@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import com.eseo.getmyspot.R
 import com.eseo.getmyspot.data.preferences.LocalPreferences
 import com.eseo.getmyspot.databinding.ActivitySettingsBinding
@@ -29,6 +31,29 @@ class SettingsActivity : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
         }
+
+        when (AppCompatDelegate.getDefaultNightMode()) {
+            AppCompatDelegate.MODE_NIGHT_YES -> {
+                binding.toggleButtonDarkTheme.setChecked(true)
+            }
+            AppCompatDelegate.MODE_NIGHT_NO -> {
+                binding.toggleButtonDarkTheme.setChecked(false)
+            }
+        }
+
+
+        binding.toggleButtonDarkTheme.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                delegate.applyDayNight()
+                LocalPreferences.getInstance(this).setThemeValue(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                delegate.applyDayNight()
+                LocalPreferences.getInstance(this).setThemeValue(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
+
 
         // get language via LocalPreferences and set the appropriate flag
         if (LocalPreferences.getInstance(this).getStringStringValue("language") == "en") {

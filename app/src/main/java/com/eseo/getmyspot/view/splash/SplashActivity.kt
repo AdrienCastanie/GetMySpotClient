@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.appcompat.app.AppCompatDelegate
 import com.eseo.getmyspot.R
 import com.eseo.getmyspot.data.preferences.LocalPreferences
 import com.eseo.getmyspot.databinding.ActivitySplashBinding
@@ -33,6 +34,10 @@ class SplashActivity : AppCompatActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // set theme light or dark (default light)
+        AppCompatDelegate.setDefaultNightMode(LocalPreferences.getInstance(this).getThemeValue())
+        delegate.applyDayNight()
+
         // get language
         var language = LocalPreferences.getInstance(this).getStringStringValue("language")
         if (language == null) {
@@ -40,6 +45,7 @@ class SplashActivity : AppCompatActivity() {
             language = Locale.getDefault().getLanguage()
             LocalPreferences.getInstance(this).saveStringValue("language", language)
         }
+
         // set language for the app
         setLocale(this, language)
 

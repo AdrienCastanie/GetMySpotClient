@@ -3,6 +3,7 @@ package com.eseo.getmyspot.data.preferences
 import android.content.Context
 import android.content.SharedPreferences
 import android.location.Location
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -24,6 +25,16 @@ class LocalPreferences private constructor(context: Context) {
                 return INSTANCE!!
             }
         }
+    }
+
+    // set theme value
+    fun setThemeValue(yourValue: Int) {
+        sharedPreferences.edit().putInt("theme", yourValue).apply()
+    }
+
+    // get theme value
+    fun getThemeValue(): Int {
+        return sharedPreferences.getInt("theme", AppCompatDelegate.MODE_NIGHT_NO)
     }
 
     // save float data (for language)
