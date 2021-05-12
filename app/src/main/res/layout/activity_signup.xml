@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.account.signin.SigninActivity">
+    tools:context=".view.account.signup.SignupActivity">
 
     <LinearLayout
         android:layout_width="300dp"
@@ -26,7 +26,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/connection"
+            android:text="@string/create_account"
             android:layout_marginBottom="20dp"
             android:textSize="30sp"/>
 
@@ -54,24 +54,37 @@
             android:layout_marginBottom="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txt_input_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/log_in"
-            android:layout_marginBottom="20dp"/>
+            app:endIconMode="password_toggle"
+            app:startIconDrawable="@drawable/ic_baseline_lock_24"
+            app:startIconContentDescription="@string/password_confirmation"
+            android:hint="@string/password_confirmation"
+            android:layout_marginBottom="20dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txt_input_password_confirmation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <Button
-            android:id="@+id/btn_create_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/create_account"
-            android:backgroundTint="@color/cardview_dark_background"/>
+            android:layout_marginBottom="20dp"/>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

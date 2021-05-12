@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.eseo.getmyspot.databinding.ActivitySigninBinding
+import com.eseo.getmyspot.view.account.signup.SignupActivity
 
 class SigninActivity : AppCompatActivity() {
 
@@ -20,5 +21,8 @@ class SigninActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySigninBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.btnCreateAccount.setOnClickListener {
+            startActivity(SignupActivity.getStartIntent(this))
+        }
     }
 }
