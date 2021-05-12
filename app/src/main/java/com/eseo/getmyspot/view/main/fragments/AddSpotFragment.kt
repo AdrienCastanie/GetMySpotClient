@@ -8,9 +8,8 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.eseo.getmyspot.R
 import com.eseo.getmyspot.data.preferences.LocalPreferences
-import com.eseo.getmyspot.view.connection.ConnectionActivity
+import com.eseo.getmyspot.view.account.signin.SigninActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.NonCancellable.cancel
 
 class AddSpotFragment : Fragment() {
 
@@ -35,7 +34,7 @@ class AddSpotFragment : Fragment() {
                 .setCancelable(false)
                 .setMessage(R.string.require_connection_message)
                 .setPositiveButton(getString(R.string.log_in)) { dialog, which ->
-                    startActivity(ConnectionActivity.getStartIntent(requireContext()))
+                    startActivity(SigninActivity.getStartIntent(requireContext()))
                 }.setNegativeButton(getText(R.string.cancel)) { dialog, which ->
                     findNavController().navigate(R.id.action_add_spot_to_home)
                 }
