@@ -38,11 +38,11 @@ class SplashActivity : AppCompatActivity() {
         delegate.applyDayNight()
 
         // get language
-        var language = LocalPreferences.getInstance(this).getStringStringValue("language")
+        var language = LocalPreferences.getInstance(this).getStringValue(LocalPreferences.LANGUAGE)
         if (language == null) {
             // if not set, set to default language
             language = Locale.getDefault().getLanguage()
-            LocalPreferences.getInstance(this).saveStringValue("language", language)
+            LocalPreferences.getInstance(this).saveStringValue(LocalPreferences.LANGUAGE, language)
         }
 
         // set language for the app

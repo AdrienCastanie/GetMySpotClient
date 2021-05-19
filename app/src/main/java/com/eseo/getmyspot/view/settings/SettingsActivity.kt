@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import com.eseo.getmyspot.R
 import com.eseo.getmyspot.data.preferences.LocalPreferences
@@ -56,7 +55,7 @@ class SettingsActivity : AppCompatActivity() {
 
 
         // get language via LocalPreferences and set the appropriate flag
-        if (LocalPreferences.getInstance(this).getStringStringValue("language") == "en") {
+        if (LocalPreferences.getInstance(this).getStringValue(LocalPreferences.LANGUAGE) == "en") {
             binding.language.setImageResource(R.drawable.angleterre)
         } else {
             binding.language.setImageResource(R.drawable.france)
@@ -65,7 +64,7 @@ class SettingsActivity : AppCompatActivity() {
         // action au clic sur le bouton language
         binding.language.setOnClickListener {
             // get language from LocalPreferences
-            var language = LocalPreferences.getInstance(this).getStringStringValue("language")
+            var language = LocalPreferences.getInstance(this).getStringValue(LocalPreferences.LANGUAGE)
             // if english, set to french and set french flag
             if (language == "en") {
                 language = "fr"
@@ -73,7 +72,7 @@ class SettingsActivity : AppCompatActivity() {
                 language = "en"
             }
             // set localpreferences with the new language
-            LocalPreferences.getInstance(this).saveStringValue("language", language)
+            LocalPreferences.getInstance(this).saveStringValue(LocalPreferences.LANGUAGE, language)
             // restart app
             startActivity(SplashActivity.getStartIntent(this))
         }
