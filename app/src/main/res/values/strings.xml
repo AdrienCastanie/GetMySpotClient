@@ -20,4 +20,8 @@
     <string name="create_account">Create account</string>
     <string name="connection">Connection</string>
     <string name="password_confirmation">Password confirmation</string>
+    <string name="create_account_error_title">Create account error</string>
+    <string name="create_account_error_message">This pseudo already exist. Please choose a other one and retry.</string>
+    <string name="ok">OK</string>
+    <string name="success">Success</string>
 </resources>
