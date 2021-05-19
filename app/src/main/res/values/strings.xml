@@ -24,4 +24,6 @@
     <string name="create_account_error_message">This pseudo already exist. Please choose a other one and retry.</string>
     <string name="ok">OK</string>
     <string name="success">Success</string>
+    <string name="connection_error_title">Connection error</string>
+    <string name="connection_error_message">Pseudo or password is invalide. Please check them and retry.</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.eseo.getmyspot.view.account.signup
+package com.eseo.getmyspot.view.account.signin
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -10,14 +10,14 @@ import com.eseo.getmyspot.view.ViewModelState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class CreateAccountViewModel(private val remoteRepository: RemoteRepository) : BaseViewModel() {
+class SignInViewModel(private val remoteRepository: RemoteRepository) : BaseViewModel() {
     val states = MutableLiveData<ViewModelState>()
 
     fun doRemoteAction(pseudo: String, password: String) {
         states.postValue(Loading)
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val result = remoteRepository.createAccount(pseudo, password)
+                val result = remoteRepository.connectionToAccount(pseudo, password)
                 states.postValue(CallResult(result))
             } catch (err: Exception) {
                 states.postValue(Failed(err))
@@ -25,5 +25,5 @@ class CreateAccountViewModel(private val remoteRepository: RemoteRepository) : B
         }
     }
 
-    data class CallResult(val isAccountCreate: Boolean) : ViewModelState()
+    data class CallResult(val isConnectToAccount: Boolean) : ViewModelState()
 }

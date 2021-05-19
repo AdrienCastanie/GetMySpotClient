@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -67,7 +65,7 @@ class SignupActivity : AppCompatActivity() {
         }
         binding.btnCreateAccount.setOnClickListener {
             if (passwordValidation)
-                createAccountViewModel.doRemoteTestAction(
+                createAccountViewModel.doRemoteAction(
                     binding.txtInputPseudo.text.toString(),
                     binding.txtInputPassword.text.toString()
                 )
