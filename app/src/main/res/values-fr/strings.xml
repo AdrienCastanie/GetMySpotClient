@@ -12,4 +12,10 @@
     <string name="settings">Paramètres</string>
     <string name="dark_theme">Thème sombre</string>
     <string name="language">Langage</string>
+    <string name="time">11 mai 2021 15:51</string>
+    <string name="battery">75 %</string>
+    <string name="position">Angers</string>
+    <string name="pressure">10 hPa</string>
+    <string name="brightness">1000 lx</string>
+    <string name="goToSpot">Go to this Spot</string>
 </resources>
