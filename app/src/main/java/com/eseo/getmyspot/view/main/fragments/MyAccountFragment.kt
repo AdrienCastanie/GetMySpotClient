@@ -41,7 +41,7 @@ class MyAccountFragment : Fragment() {
             }
 
             findViewById<RecyclerView>(R.id.rvMySpots).layoutManager = LinearLayoutManager(requireContext())
-            //findViewById<RecyclerView>(R.id.rvMySpots).setNestedScrollingEnabled(false);
+            findViewById<RecyclerView>(R.id.rvMySpots).setNestedScrollingEnabled(false);
             var position = Location("position")
             position.longitude = 41.0
             position.latitude = 41.0
