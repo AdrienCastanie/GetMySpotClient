@@ -26,12 +26,12 @@ android {
     productFlavors {
         prod {
             dimension "default"
-            buildConfigField "String", "REMOTE_URI", '"http://localhost/"'
+            buildConfigField "String", "REMOTE_URI", '"http://10.0.2.2:8000/"'
         }
         staging {
             dimension "default"
             applicationId "com.eseo.getmyspot.staging"
-            buildConfigField "String", "REMOTE_URI", '"http://localhost/"'
+            buildConfigField "String", "REMOTE_URI", '"http://10.0.2.2:8000/"'
         }
     }
 
