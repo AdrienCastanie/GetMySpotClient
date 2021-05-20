@@ -18,4 +18,8 @@ interface RemoteDataSource {
     @POST("/api/push_spot")
     @Headers("Content-type: application/json")
     suspend fun addSpot(@Body addSpotBodyParam: AddSpotBodyParam): AddSpotResult
+
+    @POST("/api/profile_picture")
+    @Headers("Content-type: application/json")
+    suspend fun changeProfilePicture(@Body changeProfilePictureBodyParam: ChangeProfilePictureBodyParam): ChangeProfilePictureResult
 }
