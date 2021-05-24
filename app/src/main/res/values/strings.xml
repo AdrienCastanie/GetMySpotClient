@@ -32,4 +32,6 @@
     <string name="success">Success</string>
     <string name="connection_error_title">Connection error</string>
     <string name="connection_error_message">Pseudo or password is invalide. Please check them and retry.</string>
+    <string name="new_spot">New Spot</string>
+    <string name="gallery">Gallery</string>
 </resources>
