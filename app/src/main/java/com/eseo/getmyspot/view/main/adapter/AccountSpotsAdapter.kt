@@ -17,23 +17,15 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.*
 
-class SpotsAdapter(private val spots: Array<SpotModel>, private val onClick: () -> Unit) :
-    RecyclerView.Adapter<SpotsAdapter.ViewHolder>() {
+class AccountSpotsAdapter(private val spots: Array<SpotModel>, private val onClick: () -> Unit) :
+    RecyclerView.Adapter<AccountSpotsAdapter.ViewHolder>() {
 
     // Comment s'affiche ma vue
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun showItem(spot: SpotModel, onClick: () -> Unit) {
 
-            itemView.findViewById<TextView>(R.id.pseudo).text = spot.pseudo
-
-            if (spot.image != null) {
-                val decodedByte = Base64.decode(spot.image, Base64.DEFAULT)
-                val bitmap = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.size)
-                itemView.findViewById<ImageView>(R.id.profile_picture).setImageBitmap(bitmap);
-            }
-
-            if (spot.image_spot !="") {
-                val decodedByte = Base64.decode(spot.image, Base64.DEFAULT)
+            if (spot.image_spot != null) {
+                val decodedByte = Base64.decode(spot.image_spot, Base64.DEFAULT)
                 val bitmap = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.size)
                 itemView.findViewById<ImageView>(R.id.image_spot).setImageBitmap(bitmap);
             }
@@ -68,7 +60,7 @@ class SpotsAdapter(private val spots: Array<SpotModel>, private val onClick: () 
     // Retourne une « vue » / « layout » pour chaque élément de la liste
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.spot_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.account_spot_item, parent, false)
         return ViewHolder(
             view
         )

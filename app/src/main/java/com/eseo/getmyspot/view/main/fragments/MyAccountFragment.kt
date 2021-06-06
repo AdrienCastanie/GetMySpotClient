@@ -1,31 +1,36 @@
 package com.eseo.getmyspot.view.main.fragments
 
-import android.R.attr
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.eseo.getmyspot.R
 import com.eseo.getmyspot.data.models.SpotModel
-import com.eseo.getmyspot.view.main.adapter.SpotsAdapter
+import com.eseo.getmyspot.data.preferences.LocalPreferences
+import com.eseo.getmyspot.view.Failed
+import com.eseo.getmyspot.view.main.adapter.AccountSpotsAdapter
 import com.eseo.getmyspot.view.settings.SettingsActivity
+import org.koin.android.viewmodel.ext.android.viewModel
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
 
 
 class MyAccountFragment : Fragment() {
+
+    private val myAccountViewModel: MyAccountViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +46,10 @@ class MyAccountFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        setupUi()
+    }
+
+    private fun setupUi() {
         view?.apply {
             findViewById<ImageView>(R.id.settings)?.setOnClickListener {
                 startActivity(SettingsActivity.getStartIntent(requireContext()))
@@ -54,7 +63,11 @@ class MyAccountFragment : Fragment() {
             var position = Location("position")
             position.longitude = 41.0
             position.latitude = 41.0
-            findViewById<RecyclerView>(R.id.rvMySpots).adapter = SpotsAdapter(arrayOf()
+            findViewById<RecyclerView>(R.id.rvMySpots).adapter = AccountSpotsAdapter(arrayOf(
+                SpotModel("Adrien", null,"75", LocalDateTime.now(), position, "10", "1000", null),
+                SpotModel("Adrien", null,"75", LocalDateTime.now(), position, "10", "1000", null),
+                SpotModel("Adrien", null,"75", LocalDateTime.now(), position, "10", "1000", null),
+                SpotModel("Adrien", null,"75", LocalDateTime.now(), position, "10", "1000", null))
             ) {
                 startActivity(
                     Intent(
@@ -64,6 +77,19 @@ class MyAccountFragment : Fragment() {
                 )
             }
         }
+
+        myAccountViewModel.states.observe(this, Observer { state ->
+            when (state) {
+                //is Loading -> TODO : peut être mettre un logo de chargement plus tard
+                is MyAccountViewModel.CallResult ->
+                    if (state.isPictureProfileChange) {
+                        Toast.makeText(requireContext(), "CHANGED", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "UNCHANGED", Toast.LENGTH_SHORT).show()
+                    }
+                is Failed -> Toast.makeText(requireContext(), "ERROR", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     companion object {
@@ -83,14 +109,18 @@ class MyAccountFragment : Fragment() {
             view?.apply {
                 val imageUri = data?.data
                 if (imageUri != null) {
-                    findViewById<ImageView>(R.id.profile_picture).setImageURI(imageUri) // handle chosen image
-                    val bitmap: Bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), imageUri);
-
+                    val imgView = findViewById<ImageView>(R.id.profile_picture)
+                    imgView.setImageURI(imageUri) // handle chosen image
+                    val bitmap = (imgView.drawable as BitmapDrawable).bitmap
+                    //val bitmap: Bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), imageUri)
                     val stream = ByteArrayOutputStream()
                     bitmap.compress(Bitmap.CompressFormat.PNG, 75, stream)
                     val byteArray: ByteArray = stream.toByteArray()
 
-                    Base64.encodeToString(byteArray, Base64.DEFAULT)
+                    val pseudo = LocalPreferences.getInstance(requireContext()).getStringValue(LocalPreferences.PSEUDO)
+                    if (pseudo != null) {
+                        myAccountViewModel.doRemoteAction(pseudo, Base64.encodeToString(byteArray, Base64.DEFAULT))
+                    }
                 }
             }
         }
