@@ -37,4 +37,11 @@
     <string name="spot_image">Spot image</string>
     <string name="map_image">Map image</string>
     <string name="refresh">Refresh</string>
+    <string name="dialog_title_permission">Permission</string>
+    <string name="dialog_message_permission">You have to accept permission to use the service</string>
+    <string name="refuse">Refuse</string>
+    <string name="metter">m</string>
+    <string name="mbar">mbar</string>
+    <string name="lux">lux</string>
+    <string name="pourcentage">%</string>
 </resources>
