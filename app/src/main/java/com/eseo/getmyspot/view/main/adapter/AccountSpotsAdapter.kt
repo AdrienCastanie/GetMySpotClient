@@ -17,12 +17,12 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.*
 
-class AccountSpotsAdapter(private val spots: Array<SpotModel>, private val onClick: () -> Unit) :
+class AccountSpotsAdapter(private val spots: List<SpotModel>, private val onClick: (spotModel: SpotModel) -> Unit) :
     RecyclerView.Adapter<AccountSpotsAdapter.ViewHolder>() {
 
     // Comment s'affiche ma vue
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun showItem(spot: SpotModel, onClick: () -> Unit) {
+        fun showItem(spot: SpotModel, onClick: (spotModel: SpotModel) -> Unit) {
 
             if (spot.image_spot != null) {
                 val decodedByte = Base64.decode(spot.image_spot, Base64.DEFAULT)
@@ -43,7 +43,7 @@ class AccountSpotsAdapter(private val spots: Array<SpotModel>, private val onCli
             itemView.findViewById<TextView>(R.id.brightness).text = spot.brightness
 
             itemView.findViewById<Button>(R.id.goToSpot).setOnClickListener {
-                onClick()
+                onClick(spot)
             }
         }
 

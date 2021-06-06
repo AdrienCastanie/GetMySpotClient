@@ -37,10 +37,10 @@ class HomeFragment : Fragment() {
             position.longitude = 41.0
             position.latitude = 41.0
             findViewById<RecyclerView>(R.id.rvSpots).adapter = HomeSpotsAdapter(arrayOf(
-                SpotModel("Adrien", null,"75", LocalDateTime.now(), position, "10", "1000", null),
-                SpotModel("Adrien", null,"75", LocalDateTime.now(), position, "10", "1000", null),
-                SpotModel("Adrien", null,"75", LocalDateTime.now(), position, "10", "1000", null),
-                SpotModel("Adrien", null,"75", LocalDateTime.now(), position, "10", "1000", null)
+                SpotModel("Adrien", null,"75", LocalDateTime.now().toString(), position, "10", "1000", null),
+                SpotModel("Adrien", null,"75", LocalDateTime.now().toString(), position, "10", "1000", null),
+                SpotModel("Adrien", null,"75", LocalDateTime.now().toString(), position, "10", "1000", null),
+                SpotModel("Adrien", null,"75", LocalDateTime.now().toString(), position, "10", "1000", null)
             )
             ) {
                 startActivity(

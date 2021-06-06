@@ -10,7 +10,7 @@ import com.eseo.getmyspot.view.ViewModelState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MyAccountViewModel(private val remoteRepository: RemoteRepository) : BaseViewModel() {
+class MyAccountProfilPictureViewModel(private val remoteRepository: RemoteRepository) : BaseViewModel() {
     val states = MutableLiveData<ViewModelState>()
 
     fun doRemoteAction(pseudo: String, image: String) {

@@ -25,12 +25,17 @@ import com.eseo.getmyspot.view.main.adapter.AccountSpotsAdapter
 import com.eseo.getmyspot.view.settings.SettingsActivity
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.io.ByteArrayOutputStream
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
+import java.util.*
 
 
 class MyAccountFragment : Fragment() {
 
-    private val myAccountViewModel: MyAccountViewModel by viewModel()
+    private val myAccountProfilPictureViewModel: MyAccountProfilPictureViewModel by viewModel()
+    private val myAccountSpotsViewModel: MyAccountSpotsViewModel by viewModel()
+    private val content = mutableListOf<SpotModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,28 +65,25 @@ class MyAccountFragment : Fragment() {
             }
             findViewById<RecyclerView>(R.id.rvMySpots).layoutManager = LinearLayoutManager(requireContext())
             findViewById<RecyclerView>(R.id.rvMySpots).setNestedScrollingEnabled(false);
-            var position = Location("position")
-            position.longitude = 41.0
-            position.latitude = 41.0
-            findViewById<RecyclerView>(R.id.rvMySpots).adapter = AccountSpotsAdapter(arrayOf(
-                SpotModel("Adrien", null,"75", LocalDateTime.now(), position, "10", "1000", null),
-                SpotModel("Adrien", null,"75", LocalDateTime.now(), position, "10", "1000", null),
-                SpotModel("Adrien", null,"75", LocalDateTime.now(), position, "10", "1000", null),
-                SpotModel("Adrien", null,"75", LocalDateTime.now(), position, "10", "1000", null))
-            ) {
+
+            // get spots
+            val pseudo = LocalPreferences.getInstance(requireContext()).getStringValue(LocalPreferences.PSEUDO)
+            myAccountSpotsViewModel.doRemoteAction(pseudo, 0, 10)
+
+            findViewById<RecyclerView>(R.id.rvMySpots).adapter = AccountSpotsAdapter(content) {
                 startActivity(
                     Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse("geo:" + position.latitude + "," + position.longitude)
+                        Uri.parse("geo:" + it.position.latitude + "," + it.position.longitude)
                     )
                 )
             }
         }
 
-        myAccountViewModel.states.observe(this, Observer { state ->
+        myAccountProfilPictureViewModel.states.observe(this, Observer { state ->
             when (state) {
                 //is Loading -> TODO : peut être mettre un logo de chargement plus tard
-                is MyAccountViewModel.CallResult ->
+                is MyAccountProfilPictureViewModel.CallResult ->
                     if (state.isPictureProfileChange) {
                         Toast.makeText(requireContext(), "CHANGED", Toast.LENGTH_SHORT).show()
                     } else {
@@ -90,6 +92,47 @@ class MyAccountFragment : Fragment() {
                 is Failed -> Toast.makeText(requireContext(), "ERROR", Toast.LENGTH_SHORT).show()
             }
         })
+
+        myAccountSpotsViewModel.states.observe(this, Observer { state ->
+            when (state) {
+                //is Loading -> TODO : peut être mettre un logo de chargement plus tard
+                is MyAccountSpotsViewModel.CallResult ->
+                    if (state.result.error == 0) {
+                        state.result.list_spots.forEach {
+                            var position = Location("")
+                            position.latitude = it.position_latitude
+                            position.longitude = it.position_longitude
+                            val time = convertTime(it.time)
+                            System.err.println("adrien : " + time)
+                            content.add(SpotModel(it.pseudo, it.image, it.battery, time, position,  it.pressure, it.brightness, it.image_spot))
+                        }
+                        this.view?.findViewById<RecyclerView>(R.id.rvMySpots)?.adapter?.notifyDataSetChanged()
+                        Toast.makeText(requireContext(), "RECU", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "NON RECU", Toast.LENGTH_SHORT).show()
+                    }
+                is Failed -> Toast.makeText(requireContext(), "ERROR", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun convertTime(time: String): String {
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
+        var date: Date? = null
+        try {
+            date = simpleDateFormat.parse(time)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+        }
+
+
+        if (date == null) {
+            return ""
+        }
+
+        val convertDateFormat = SimpleDateFormat("dd/MM/yyyy")
+        return convertDateFormat.format(date)
+
     }
 
     companion object {
@@ -119,7 +162,7 @@ class MyAccountFragment : Fragment() {
 
                     val pseudo = LocalPreferences.getInstance(requireContext()).getStringValue(LocalPreferences.PSEUDO)
                     if (pseudo != null) {
-                        myAccountViewModel.doRemoteAction(pseudo, Base64.encodeToString(byteArray, Base64.DEFAULT))
+                        myAccountProfilPictureViewModel.doRemoteAction(pseudo, Base64.encodeToString(byteArray, Base64.DEFAULT))
                     }
                 }
             }
