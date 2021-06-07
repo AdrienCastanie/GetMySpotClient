@@ -4,6 +4,7 @@ import com.eseo.getmyspot.domain.repository.RemoteRepository
 import com.eseo.getmyspot.domain.repository.RemoteRepositoryImpl
 import com.eseo.getmyspot.view.account.signin.SignInViewModel
 import com.eseo.getmyspot.view.account.signup.CreateAccountViewModel
+import com.eseo.getmyspot.view.main.fragments.AddSpotViewModel
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -12,6 +13,7 @@ val appModule = module {
     // Inject dependencies for the MainViewModel (the only UI in this boilerplate)
     viewModel { CreateAccountViewModel(get()) }
     viewModel { SignInViewModel(get()) }
+    viewModel { AddSpotViewModel(get()) }
 
     // Sample Remote Data Repository
     single<RemoteRepository>(createdAtStart = true) { RemoteRepositoryImpl(get()) }

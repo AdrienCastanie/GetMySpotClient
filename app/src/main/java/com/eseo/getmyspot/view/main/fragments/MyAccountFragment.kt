@@ -8,9 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.eseo.getmyspot.R
@@ -45,11 +43,7 @@ class MyAccountFragment : Fragment() {
             var position = Location("position")
             position.longitude = 41.0
             position.latitude = 41.0
-            findViewById<RecyclerView>(R.id.rvMySpots).adapter = SpotsAdapter(arrayOf(
-                SpotModel("Adrien", null,"75", LocalDateTime.now(), position, "10", "1000", null),
-                SpotModel("Adrien", null,"75", LocalDateTime.now(), position, "10", "1000", null),
-                SpotModel("Adrien", null,"75", LocalDateTime.now(), position, "10", "1000", null),
-                SpotModel("Adrien", null,"75", LocalDateTime.now(), position, "10", "1000", null))
+            findViewById<RecyclerView>(R.id.rvMySpots).adapter = SpotsAdapter(arrayOf()
             ) {
                 startActivity(
                     Intent(

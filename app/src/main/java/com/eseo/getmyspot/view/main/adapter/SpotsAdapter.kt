@@ -32,7 +32,7 @@ class SpotsAdapter(private val spots: Array<SpotModel>, private val onClick: () 
                 itemView.findViewById<ImageView>(R.id.profile_picture).setImageBitmap(bitmap);
             }
 
-            if (spot.image_spot != null) {
+            if (spot.image_spot !="") {
                 val decodedByte = Base64.decode(spot.image, Base64.DEFAULT)
                 val bitmap = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.size)
                 itemView.findViewById<ImageView>(R.id.image_spot).setImageBitmap(bitmap);

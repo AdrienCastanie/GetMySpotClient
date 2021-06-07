@@ -32,4 +32,18 @@
     <string name="success">Success</string>
     <string name="connection_error_title">Connection error</string>
     <string name="connection_error_message">Pseudo or password is invalide. Please check them and retry.</string>
+    <string name="new_spot">New Spot</string>
+    <string name="gallery">Gallery</string>
+    <string name="spot_image">Spot image</string>
+    <string name="map_image">Map image</string>
+    <string name="refresh">Refresh</string>
+    <string name="dialog_title_permission">Permission</string>
+    <string name="dialog_message_permission">You have to accept permission to use the service</string>
+    <string name="refuse">Refuse</string>
+    <string name="metter">m</string>
+    <string name="mbar">mbar</string>
+    <string name="lux">lux</string>
+    <string name="pourcentage">%</string>
+    <string name="add_spot_error_title">Add spot error</string>
+    <string name="add_spot_erro_message">Server error, we can\'t add your spot now. Please retry later</string>
 </resources>
