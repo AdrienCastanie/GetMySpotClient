@@ -11,6 +11,7 @@ import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -36,6 +37,14 @@ class MyAccountFragment : Fragment() {
     private val myAccountProfilPictureViewModel: MyAccountProfilPictureViewModel by viewModel()
     private val myAccountSpotsViewModel: MyAccountSpotsViewModel by viewModel()
     private val content = mutableListOf<SpotModel>()
+    private var pageCourante = 0
+    private var pseudo : String? = null
+
+    companion object {
+        fun newInstance() = MyAccountFragment()
+        const val REQUEST_CODE = 999
+        const val NBELEMENTS = 10
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,13 +60,21 @@ class MyAccountFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        pseudo = LocalPreferences.getInstance(requireContext()).getStringValue(LocalPreferences.PSEUDO)
         setupUi()
     }
 
     private fun setupUi() {
+        pageCourante = 0
         view?.apply {
+            findViewById<RecyclerView>(R.id.rvMySpots)?.adapter?.notifyDataSetChanged()
             findViewById<ImageView>(R.id.settings)?.setOnClickListener {
                 startActivity(SettingsActivity.getStartIntent(requireContext()))
+            }
+
+            findViewById<Button>(R.id.more_data)?.setOnClickListener {
+                pageCourante++
+                myAccountSpotsViewModel.doRemoteAction(pseudo, pageCourante*NBELEMENTS, pageCourante*NBELEMENTS+NBELEMENTS)
             }
 
             findViewById<ImageView>(R.id.profile_picture).setOnClickListener {
@@ -67,8 +84,7 @@ class MyAccountFragment : Fragment() {
             findViewById<RecyclerView>(R.id.rvMySpots).setNestedScrollingEnabled(false);
 
             // get spots
-            val pseudo = LocalPreferences.getInstance(requireContext()).getStringValue(LocalPreferences.PSEUDO)
-            myAccountSpotsViewModel.doRemoteAction(pseudo, 0, 10)
+            myAccountSpotsViewModel.doRemoteAction(pseudo, pageCourante*NBELEMENTS, pageCourante*NBELEMENTS+NBELEMENTS)
 
             findViewById<RecyclerView>(R.id.rvMySpots).adapter = AccountSpotsAdapter(content) {
                 startActivity(
@@ -98,12 +114,12 @@ class MyAccountFragment : Fragment() {
                 //is Loading -> TODO : peut être mettre un logo de chargement plus tard
                 is MyAccountSpotsViewModel.CallResult ->
                     if (state.result.error == 0) {
+                        content.clear()
                         state.result.list_spots.forEach {
                             var position = Location("")
                             position.latitude = it.position_latitude
                             position.longitude = it.position_longitude
                             val time = convertTime(it.time)
-                            System.err.println("adrien : " + time)
                             content.add(SpotModel(it.pseudo, it.image, it.battery, time, position,  it.pressure, it.brightness, it.image_spot))
                         }
                         this.view?.findViewById<RecyclerView>(R.id.rvMySpots)?.adapter?.notifyDataSetChanged()
@@ -133,11 +149,6 @@ class MyAccountFragment : Fragment() {
         val convertDateFormat = SimpleDateFormat("dd/MM/yyyy")
         return convertDateFormat.format(date)
 
-    }
-
-    companion object {
-        fun newInstance() = MyAccountFragment()
-        const val REQUEST_CODE = 999
     }
 
     private fun openGalleryForImage() {

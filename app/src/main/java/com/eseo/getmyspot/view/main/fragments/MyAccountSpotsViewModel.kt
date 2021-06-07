@@ -21,7 +21,6 @@ class MyAccountSpotsViewModel(private val remoteRepository: RemoteRepository) : 
                 val spots = remoteRepository.getSpots(pseudo, range_min, range_max)
                 states.postValue(CallResult(spots))
             } catch (err: Exception) {
-                System.err.println(err)
                 states.postValue(Failed(err))
             }
         }

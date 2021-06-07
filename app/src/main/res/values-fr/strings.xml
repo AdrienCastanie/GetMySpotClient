@@ -18,4 +18,5 @@
     <string name="pressure">10 hPa</string>
     <string name="brightness">1000 lx</string>
     <string name="goToSpot">Go to this Spot</string>
+    <string name="more">more</string>
 </resources>
