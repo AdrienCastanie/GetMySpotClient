@@ -44,4 +44,6 @@
     <string name="mbar">mbar</string>
     <string name="lux">lux</string>
     <string name="pourcentage">%</string>
+    <string name="add_spot_error_title">Add spot error</string>
+    <string name="add_spot_erro_message">Server error, we can\'t add your spot now. Please retry later</string>
 </resources>

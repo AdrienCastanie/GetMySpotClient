@@ -1,6 +1,7 @@
 package com.eseo.getmyspot.domain.repository
 
 import com.eseo.getmyspot.BuildConfig
+import com.eseo.getmyspot.data.models.AddSpotBodyParam
 import com.eseo.getmyspot.data.models.ConnectionAccountBodyParam
 import com.eseo.getmyspot.data.models.CreateAccountBodyParam
 import com.eseo.getmyspot.data.remote.RemoteDataSource
@@ -10,6 +11,7 @@ interface RemoteRepository {
 
     suspend fun createAccount(pseudo: String, password: String): Boolean
     suspend fun connectionToAccount(pseudo: String, password: String): Boolean
+    suspend fun addSpot(addSpotBodyParam: AddSpotBodyParam): Boolean
 
 }
 
@@ -35,6 +37,11 @@ class RemoteRepositoryImpl(private val remoteDataSource: RemoteDataSource) : Rem
     override suspend fun connectionToAccount(pseudo: String, password: String): Boolean {
         val result = remoteDataSource.connectionToAccount(ConnectionAccountBodyParam(pseudo, password))
         return result.error == 0 && result.user_pseudo == pseudo
+    }
+
+    override suspend fun addSpot(addSpotBodyParam: AddSpotBodyParam): Boolean {
+        val result = remoteDataSource.addSpot(addSpotBodyParam)
+        return result.error == 0
     }
 
 }

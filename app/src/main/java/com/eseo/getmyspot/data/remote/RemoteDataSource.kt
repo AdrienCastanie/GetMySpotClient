@@ -1,9 +1,6 @@
 package com.eseo.getmyspot.data.remote
 
-import com.eseo.getmyspot.data.models.ConnectionAccountBodyParam
-import com.eseo.getmyspot.data.models.ConnectionAccountResult
-import com.eseo.getmyspot.data.models.CreateAccountBodyParam
-import com.eseo.getmyspot.data.models.CreateAccountResult
+import com.eseo.getmyspot.data.models.*
 import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST
@@ -17,4 +14,8 @@ interface RemoteDataSource {
     @POST("/api/login")
     @Headers("Content-type: application/json")
     suspend fun connectionToAccount(@Body connectionAccountBodyParam: ConnectionAccountBodyParam): ConnectionAccountResult
+
+    @POST("/api/push_spot")
+    @Headers("Content-type: application/json")
+    suspend fun addSpot(@Body addSpotBodyParam: AddSpotBodyParam): AddSpotResult
 }

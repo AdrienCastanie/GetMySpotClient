@@ -2,6 +2,7 @@ package com.eseo.getmyspot.view.main.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
+import androidx.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -33,12 +34,16 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.eseo.getmyspot.BuildConfig
 import com.eseo.getmyspot.R
+import com.eseo.getmyspot.data.models.SpotModel
 import com.eseo.getmyspot.data.preferences.LocalPreferences
+import com.eseo.getmyspot.view.Failed
+import com.eseo.getmyspot.view.account.signin.SignInViewModel
 import com.eseo.getmyspot.view.account.signin.SigninActivity
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.koin.android.viewmodel.ext.android.viewModel
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.util.*
@@ -50,7 +55,8 @@ class AddSpotFragment : Fragment(), SensorEventListener {
         fun newInstance() = AddSpotFragment()
     }
 
-    private var imageBase64: String? = null
+    private val addSpotViewModel: AddSpotViewModel by viewModel()
+    private var newSpot: SpotModel = SpotModel("", "", "", "", Location(""), "", "", "")
     private val PICK_IMAGE = 9999
     private val PERMISSION_REQUEST_LOCATION = 9999
     private var sensorPressure: Sensor? = null
@@ -89,6 +95,8 @@ class AddSpotFragment : Fragment(), SensorEventListener {
                 }
                 .show()
         } else {
+            newSpot.pseudo = LocalPreferences.getInstance(requireContext())
+                .getStringValue(LocalPreferences.PSEUDO)!!
             askPermission()
         }
     }
@@ -107,11 +115,37 @@ class AddSpotFragment : Fragment(), SensorEventListener {
 
             startActivityForResult(chooserIntent, PICK_IMAGE)
         }
+        this.view?.findViewById<Button>(R.id.btn_refresh)?.setOnClickListener {
+            getSensorValues()
+        }
+        this.view?.findViewById<Button>(R.id.btn_validate)?.setOnClickListener {
+            addSpotViewModel.doRemoteAction(newSpot!!)
+        }
+
+        addSpotViewModel.states.observe(this, Observer { state ->
+            when (state) {
+                is AddSpotViewModel.CallResult ->
+                    if (state.isCorrectlyAdded) {
+                        Toast.makeText(requireContext(), getString(R.string.success), Toast.LENGTH_SHORT).show()
+                        System.out.println(findNavController().currentDestination?.id)
+                        if (findNavController().currentDestination?.id == R.id.add_spot) {
+                            findNavController().navigate(R.id.action_add_spot_to_my_account)
+                        }
+                    } else {
+                        MaterialAlertDialogBuilder(requireContext()).setTitle(getString(R.string.add_spot_error_title))
+                            .setMessage(getString(R.string.add_spot_erro_message))
+                            .setPositiveButton(getString(R.string.ok)) { dialog, which ->
+                            }
+                            .show()
+                    }
+                is Failed -> Toast.makeText(requireContext(), "ERROR", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun displaySpotImage() {
         this.view?.findViewById<ImageView>(R.id.image_spot)
-            ?.setImageBitmap(decodeToBitMap(imageBase64))
+            ?.setImageBitmap(decodeToBitMap(newSpot.image_spot))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -120,14 +154,14 @@ class AddSpotFragment : Fragment(), SensorEventListener {
                 val imageStream: InputStream? =
                     data.getData()?.let { requireContext().contentResolver.openInputStream(it) }
                 val yourSelectedImage = BitmapFactory.decodeStream(imageStream)
-                imageBase64 = encodeTobase64(yourSelectedImage)
-                if (imageBase64 != null)
+                newSpot.image_spot = encodeTobase64(yourSelectedImage)
+                if (newSpot.image_spot != "")
                     displaySpotImage()
             }
         }
     }
 
-    private fun encodeTobase64(image: Bitmap): String? {
+    private fun encodeTobase64(image: Bitmap): String {
         val baos = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val b: ByteArray = baos.toByteArray()
@@ -218,6 +252,7 @@ class AddSpotFragment : Fragment(), SensorEventListener {
         if (results.isNotEmpty()) {
             this.view?.findViewById<TextView>(R.id.txt_address)?.text =
                 " " + results[0].getAddressLine(0)
+            newSpot!!.position = location
         }
     }
 
@@ -231,7 +266,9 @@ class AddSpotFragment : Fragment(), SensorEventListener {
             val scale: Int = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
             level * 100 / scale.toFloat()
         }
-        this.view?.findViewById<TextView>(R.id.txt_battery)?.text = batteryPct.toString() + " " + getString(R.string.pourcentage)
+        this.view?.findViewById<TextView>(R.id.txt_battery)?.text =
+            batteryPct.toString() + " " + getString(R.string.pourcentage)
+        newSpot!!.battery = batteryPct.toString()
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
@@ -244,14 +281,16 @@ class AddSpotFragment : Fragment(), SensorEventListener {
                     ).toString() + " " + getString(R.string.metter)
                 this.view?.findViewById<TextView>(R.id.txt_pressure)?.text =
                     event.values[0].toString() + " " + getString(R.string.mbar)
+                newSpot!!.pressure = event.values[0].toString()
             } else if (event.sensor.type == Sensor.TYPE_LIGHT) {
                 this.view?.findViewById<TextView>(R.id.txt_light)?.text =
                     event.values[0].toString() + " " + getString(R.string.lux)
+                newSpot!!.brightness = event.values[0].toString()
             }
         }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-
+        //On ne gère pas
     }
 }

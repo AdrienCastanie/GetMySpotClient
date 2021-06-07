@@ -25,7 +25,7 @@
         android:backgroundTint="@color/black"
         android:contentDescription="@string/spot_image"
         android:scaleType="fitCenter"
-        android:src="@drawable/ic_baseline_settings_24"
+        android:src="@drawable/ic_baseline_add_a_photo_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_title_new_spot" />
@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="5dp"
-            android:gravity="center_vertical"/>
+            android:gravity="center_vertical" />
     </LinearLayout>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -90,7 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
-                android:gravity="center_vertical"/>
+                android:gravity="center_vertical" />
         </LinearLayout>
 
         <LinearLayout
@@ -109,7 +109,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
-                android:gravity="center_vertical"/>
+                android:gravity="center_vertical" />
         </LinearLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -140,7 +140,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
-                android:gravity="center_vertical"/>
+                android:gravity="center_vertical" />
         </LinearLayout>
 
         <LinearLayout
@@ -159,19 +159,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
-                android:gravity="center_vertical"/>
+                android:gravity="center_vertical" />
         </LinearLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-    <Button
-        android:id="@+id/btn_refresh"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/refresh"
-        android:layout_marginTop="40dp"
+        android:weightSum="2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lyt_sun_battery" />
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lyt_sun_battery">
+
+        <Button
+            android:id="@+id/btn_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="@string/refresh"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+
+        <Button
+            android:id="@+id/btn_validate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="@string/add_spot"
+            android:layout_weight="1"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
