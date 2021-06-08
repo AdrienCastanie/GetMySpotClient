@@ -16,6 +16,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.eseo.getmyspot.R
@@ -114,25 +115,31 @@ class MyAccountFragment : Fragment() {
     }
 
     private fun onApiResult(spotsResult: GetSpotsResult?, isError: Boolean) {
-        requireActivity().runOnUiThread {
-            if (!isError && spotsResult != null) {
-                System.out.println("CALL RESULT");
-                if (spotsResult.list_spots != null) {
-                    spotsResult.list_spots.forEach {
-                        var position = Location("")
-                        position.latitude = it.position_latitude
-                        position.longitude = it.position_longitude
-                        val time = convertTime(it.time)
-                        content.add(SpotModel(it.pseudo, it.image, it.battery, time, position,  it.pressure, it.brightness, it.image_spot))
+        try {
+            requireActivity().runOnUiThread {
+                if (!isError && spotsResult != null) {
+                    System.out.println("CALL RESULT");
+                    if (spotsResult.list_spots != null) {
+                        spotsResult.list_spots.forEach {
+                            var position = Location("")
+                            position.latitude = it.position_latitude
+                            position.longitude = it.position_longitude
+                            val time = convertTime(it.time)
+                            content.add(SpotModel(it.pseudo, it.image, it.battery, time, position,  it.pressure, it.brightness,
+                                it.image_spot!!
+                            ))
+                        }
+                        this.view?.findViewById<RecyclerView>(R.id.rvMySpots)?.adapter?.notifyDataSetChanged()
+                        Toast.makeText(requireContext(), "RECU", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "No more data", Toast.LENGTH_SHORT).show()
                     }
-                    this.view?.findViewById<RecyclerView>(R.id.rvMySpots)?.adapter?.notifyDataSetChanged()
-                    Toast.makeText(requireContext(), "RECU", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(requireContext(), "No more data", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "NON RECU", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(requireContext(), "NON RECU", Toast.LENGTH_SHORT).show()
             }
+        } catch (err : Exception) {
+            System.err.println("On cherche à modifier une vue qui n'est plus affiché " + err)
         }
     }
 
