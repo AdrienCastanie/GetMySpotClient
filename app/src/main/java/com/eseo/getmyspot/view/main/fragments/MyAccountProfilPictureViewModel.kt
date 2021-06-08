@@ -14,7 +14,6 @@ class MyAccountProfilPictureViewModel(private val remoteRepository: RemoteReposi
     val states = MutableLiveData<ViewModelState>()
 
     fun doRemoteAction(pseudo: String, image: String) {
-        states.postValue(Loading)
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = remoteRepository.changeProfilePicture(pseudo, image)

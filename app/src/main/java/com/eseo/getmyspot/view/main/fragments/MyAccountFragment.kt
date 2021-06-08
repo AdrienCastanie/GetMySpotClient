@@ -19,6 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.eseo.getmyspot.R
+import com.eseo.getmyspot.data.models.GetSpotsResult
 import com.eseo.getmyspot.data.models.SpotModel
 import com.eseo.getmyspot.data.preferences.LocalPreferences
 import com.eseo.getmyspot.view.Failed
@@ -74,7 +75,7 @@ class MyAccountFragment : Fragment() {
 
             findViewById<Button>(R.id.more_data)?.setOnClickListener {
                 pageCourante++
-                myAccountSpotsViewModel.doRemoteAction(pseudo, pageCourante*NBELEMENTS, pageCourante*NBELEMENTS+NBELEMENTS)
+                myAccountSpotsViewModel.doRemoteAction(pseudo, pageCourante*NBELEMENTS, pageCourante*NBELEMENTS+NBELEMENTS, ::onApiResult)
             }
 
             findViewById<ImageView>(R.id.profile_picture).setOnClickListener {
@@ -83,8 +84,10 @@ class MyAccountFragment : Fragment() {
             findViewById<RecyclerView>(R.id.rvMySpots).layoutManager = LinearLayoutManager(requireContext())
             findViewById<RecyclerView>(R.id.rvMySpots).setNestedScrollingEnabled(false);
 
+            content.clear()
+            findViewById<RecyclerView>(R.id.rvMySpots)?.adapter?.notifyDataSetChanged()
             // get spots
-            myAccountSpotsViewModel.doRemoteAction(pseudo, pageCourante*NBELEMENTS, pageCourante*NBELEMENTS+NBELEMENTS)
+            myAccountSpotsViewModel.doRemoteAction(pseudo, pageCourante*NBELEMENTS, pageCourante*NBELEMENTS+NBELEMENTS, ::onApiResult)
 
             findViewById<RecyclerView>(R.id.rvMySpots).adapter = AccountSpotsAdapter(content) {
                 startActivity(
@@ -108,28 +111,29 @@ class MyAccountFragment : Fragment() {
                 is Failed -> Toast.makeText(requireContext(), "ERROR", Toast.LENGTH_SHORT).show()
             }
         })
+    }
 
-        myAccountSpotsViewModel.states.observe(this, Observer { state ->
-            when (state) {
-                //is Loading -> TODO : peut être mettre un logo de chargement plus tard
-                is MyAccountSpotsViewModel.CallResult ->
-                    if (state.result.error == 0) {
-                        content.clear()
-                        state.result.list_spots.forEach {
-                            var position = Location("")
-                            position.latitude = it.position_latitude
-                            position.longitude = it.position_longitude
-                            val time = convertTime(it.time)
-                            content.add(SpotModel(it.pseudo, it.image, it.battery, time, position,  it.pressure, it.brightness, it.image_spot))
-                        }
-                        this.view?.findViewById<RecyclerView>(R.id.rvMySpots)?.adapter?.notifyDataSetChanged()
-                        Toast.makeText(requireContext(), "RECU", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(requireContext(), "NON RECU", Toast.LENGTH_SHORT).show()
+    private fun onApiResult(spotsResult: GetSpotsResult?, isError: Boolean) {
+        requireActivity().runOnUiThread {
+            if (!isError && spotsResult != null) {
+                System.out.println("CALL RESULT");
+                if (spotsResult.list_spots != null) {
+                    spotsResult.list_spots.forEach {
+                        var position = Location("")
+                        position.latitude = it.position_latitude
+                        position.longitude = it.position_longitude
+                        val time = convertTime(it.time)
+                        content.add(SpotModel(it.pseudo, it.image, it.battery, time, position,  it.pressure, it.brightness, it.image_spot))
                     }
-                is Failed -> Toast.makeText(requireContext(), "ERROR", Toast.LENGTH_SHORT).show()
+                    this.view?.findViewById<RecyclerView>(R.id.rvMySpots)?.adapter?.notifyDataSetChanged()
+                    Toast.makeText(requireContext(), "RECU", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "No more data", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(requireContext(), "NON RECU", Toast.LENGTH_SHORT).show()
             }
-        })
+        }
     }
 
     private fun convertTime(time: String): String {
@@ -140,12 +144,9 @@ class MyAccountFragment : Fragment() {
         } catch (e: ParseException) {
             e.printStackTrace()
         }
-
-
         if (date == null) {
             return ""
         }
-
         val convertDateFormat = SimpleDateFormat("dd/MM/yyyy")
         return convertDateFormat.format(date)
 
@@ -166,7 +167,6 @@ class MyAccountFragment : Fragment() {
                     val imgView = findViewById<ImageView>(R.id.profile_picture)
                     imgView.setImageURI(imageUri) // handle chosen image
                     val bitmap = (imgView.drawable as BitmapDrawable).bitmap
-                    //val bitmap: Bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), imageUri)
                     val stream = ByteArrayOutputStream()
                     bitmap.compress(Bitmap.CompressFormat.PNG, 75, stream)
                     val byteArray: ByteArray = stream.toByteArray()
