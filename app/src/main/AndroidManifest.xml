@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.eseo.getmyspot">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,19 +15,33 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GetMySpot">
-        <activity android:name=".view.account.signup.SignupActivity" />
-        <activity android:name=".view.account.signin.SigninActivity" />
+        <activity
+            android:name=".view.account.signup.SignupActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".view.account.signin.SigninActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".view.settings.SettingsActivity"
-            android:theme="@style/Theme.GetMySpotActionBar" />
-        <activity android:name=".view.splash.SplashActivity">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.GetMySpotActionBar"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".view.splash.SplashActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.main.MainActivity" />
+        <activity
+            android:name=".view.main.MainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
     </application>
 
 </manifest>
