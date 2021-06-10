@@ -9,6 +9,7 @@ interface RemoteRepository {
     suspend fun createAccount(pseudo: String, password: String): Boolean
     suspend fun connectionToAccount(pseudo: String, password: String): Boolean
     suspend fun changeProfilePicture(pseudo: String, image: String): Boolean
+    suspend fun getProfilePicture(pseudo: String): GetProfilePictureResult
     suspend fun getSpots(pseudo: String?, range_min: Number, range_max: Number): GetSpotsResult
     suspend fun addSpot(addSpotBodyParam: AddSpotBodyParam): Boolean
 
@@ -52,6 +53,15 @@ class RemoteRepositoryImpl(private val remoteDataSource: RemoteDataSource) : Rem
     override suspend fun changeProfilePicture(pseudo: String, image: String): Boolean {
         val result = remoteDataSource.changeProfilePicture(ChangeProfilePictureBodyParam(pseudo, image))
         return result.error == 0 && result.user_pseudo == pseudo
+    }
+
+    /**
+     * Changement de photo de profil
+     *
+     * @param pseudo pseudonyme de l'utilisateur
+     */
+    override suspend fun getProfilePicture(pseudo: String): GetProfilePictureResult {
+        return remoteDataSource.getProfilePicture(pseudo)
     }
 
     /**

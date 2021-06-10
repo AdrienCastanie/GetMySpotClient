@@ -3,6 +3,7 @@ package com.eseo.getmyspot.view.main.fragments
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.location.Location
 import android.net.Uri
@@ -13,13 +14,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.eseo.getmyspot.R
+import com.eseo.getmyspot.data.models.GetProfilePictureResult
 import com.eseo.getmyspot.data.models.GetSpotsResult
 import com.eseo.getmyspot.data.models.SpotModel
 import com.eseo.getmyspot.data.preferences.LocalPreferences
@@ -30,7 +32,6 @@ import org.koin.android.viewmodel.ext.android.viewModel
 import java.io.ByteArrayOutputStream
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.util.*
 
 
@@ -38,6 +39,7 @@ class MyAccountFragment : Fragment() {
 
     private val myAccountProfilPictureViewModel: MyAccountProfilPictureViewModel by viewModel()
     private val myAccountSpotsViewModel: MyAccountSpotsViewModel by viewModel()
+    private val myAccountGetProfilePictureViewModel: MyAccountGetProfilePictureViewModel by viewModel()
     private val content = mutableListOf<SpotModel>()
     private var pageCourante = 0
     private var pseudo : String? = null
@@ -69,34 +71,46 @@ class MyAccountFragment : Fragment() {
     private fun setupUi() {
         pageCourante = 0
         view?.apply {
-            findViewById<RecyclerView>(R.id.rvMySpots)?.adapter?.notifyDataSetChanged()
             findViewById<ImageView>(R.id.settings)?.setOnClickListener {
                 startActivity(SettingsActivity.getStartIntent(requireContext()))
             }
 
-            findViewById<Button>(R.id.more_data)?.setOnClickListener {
-                pageCourante++
-                myAccountSpotsViewModel.doRemoteAction(pseudo, pageCourante*NBELEMENTS, pageCourante*NBELEMENTS+NBELEMENTS, ::onApiResult)
-            }
+            // if user is connected
+            if (pseudo != null) {
+                findViewById<TextView>(R.id.pseudo).text = pseudo
 
-            findViewById<ImageView>(R.id.profile_picture).setOnClickListener {
-                openGalleryForImage()
-            }
-            findViewById<RecyclerView>(R.id.rvMySpots).layoutManager = LinearLayoutManager(requireContext())
-            findViewById<RecyclerView>(R.id.rvMySpots).setNestedScrollingEnabled(false);
+                // when click on button more : load more data with a API call
+                findViewById<Button>(R.id.more_data).setOnClickListener {
+                    pageCourante++
+                    myAccountSpotsViewModel.doRemoteAction(pseudo, pageCourante*NBELEMENTS, pageCourante*NBELEMENTS+NBELEMENTS, ::onSpotsApiResult)
+                }
 
-            content.clear()
-            findViewById<RecyclerView>(R.id.rvMySpots)?.adapter?.notifyDataSetChanged()
-            // get spots
-            myAccountSpotsViewModel.doRemoteAction(pseudo, pageCourante*NBELEMENTS, pageCourante*NBELEMENTS+NBELEMENTS, ::onApiResult)
+                // get the image profile
+                myAccountGetProfilePictureViewModel.doRemoteAction(pseudo!!, ::onGetProfilePictureApiResult)
 
-            findViewById<RecyclerView>(R.id.rvMySpots).adapter = AccountSpotsAdapter(content) {
-                startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse("geo:" + it.position.latitude + "," + it.position.longitude)
+                findViewById<ImageView>(R.id.profile_picture).setOnClickListener {
+                    openGalleryForImage()
+                }
+                findViewById<RecyclerView>(R.id.rvMySpots).layoutManager = LinearLayoutManager(requireContext())
+                findViewById<RecyclerView>(R.id.rvMySpots).setNestedScrollingEnabled(false);
+
+                // clear the spots list before displayed it again
+                content.clear()
+                findViewById<RecyclerView>(R.id.rvMySpots)?.adapter?.notifyDataSetChanged()
+                // get spots
+                myAccountSpotsViewModel.doRemoteAction(pseudo, pageCourante*NBELEMENTS, pageCourante*NBELEMENTS+NBELEMENTS, ::onSpotsApiResult)
+
+                findViewById<RecyclerView>(R.id.rvMySpots).adapter = AccountSpotsAdapter(content) {
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("geo:" + it.position.latitude + "," + it.position.longitude)
+                        )
                     )
-                )
+                }
+            } else {
+                findViewById<Button>(R.id.more_data).setVisibility(View.GONE)
+                // TODO : ADD a button to connect
             }
         }
 
@@ -114,11 +128,26 @@ class MyAccountFragment : Fragment() {
         })
     }
 
-    private fun onApiResult(spotsResult: GetSpotsResult?, isError: Boolean) {
+    private fun onGetProfilePictureApiResult(profilePictureResult: GetProfilePictureResult?, isError: Boolean) {
+        try {
+            requireActivity().runOnUiThread {
+                if (!isError && profilePictureResult != null && profilePictureResult.image != null) {
+                    val imageBytes = Base64.decode(profilePictureResult.image, 0)
+                    val image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                    this.view?.findViewById<ImageView>(R.id.profile_picture)?.setImageBitmap(image)
+                } else {
+                    Toast.makeText(requireContext(), "NO Picture Profile", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } catch (err : Exception) {
+            System.err.println("On cherche à modifier une vue qui n'est plus affiché " + err)
+        }
+    }
+
+    private fun onSpotsApiResult(spotsResult: GetSpotsResult?, isError: Boolean) {
         try {
             requireActivity().runOnUiThread {
                 if (!isError && spotsResult != null) {
-                    System.out.println("CALL RESULT");
                     if (spotsResult.list_spots != null) {
                         spotsResult.list_spots.forEach {
                             var position = Location("")
