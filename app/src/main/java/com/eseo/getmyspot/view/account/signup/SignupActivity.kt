@@ -70,7 +70,7 @@ class SignupActivity : AppCompatActivity() {
                     binding.txtInputPassword.text.toString()
                 )
             else
-                Toast.makeText(this, "Password not matching", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.password_not_correct), Toast.LENGTH_SHORT).show()
         }
     }
 }

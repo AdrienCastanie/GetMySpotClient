@@ -13,6 +13,7 @@ import com.eseo.getmyspot.view.Failed
 import com.eseo.getmyspot.view.account.signup.SignupActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.viewmodel.ext.android.viewModel
+import retrofit2.Response.error
 
 class SigninActivity : AppCompatActivity() {
 
@@ -48,7 +49,7 @@ class SigninActivity : AppCompatActivity() {
                             }
                             .show()
                     }
-                is Failed -> Toast.makeText(this, "ERROR", Toast.LENGTH_SHORT).show()
+                is Failed -> Toast.makeText(this, getString(R.string.error), Toast.LENGTH_SHORT).show()
             }
         })
 

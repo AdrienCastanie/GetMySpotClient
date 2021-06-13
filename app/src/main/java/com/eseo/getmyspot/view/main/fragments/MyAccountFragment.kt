@@ -18,7 +18,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.eseo.getmyspot.R
@@ -141,11 +140,23 @@ class MyAccountFragment : Fragment() {
                 //is Loading -> TODO : peut être mettre un logo de chargement plus tard
                 is MyAccountProfilPictureViewModel.CallResult ->
                     if (state.isPictureProfileChange) {
-                        Toast.makeText(requireContext(), "CHANGED", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.picture_profile_updated),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     } else {
-                        Toast.makeText(requireContext(), "UNCHANGED", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.picture_profile_not_updated),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                is Failed -> Toast.makeText(requireContext(), "ERROR", Toast.LENGTH_SHORT).show()
+                is Failed -> Toast.makeText(
+                    requireContext(),
+                    getString(R.string.picture_profile_not_updated),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
@@ -163,7 +174,11 @@ class MyAccountFragment : Fragment() {
                         this.view?.findViewById<ImageView>(R.id.profile_picture)
                             ?.setImageBitmap(image)
                     } else {
-                        Toast.makeText(requireContext(), "NO Picture Profile", Toast.LENGTH_SHORT)
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.picture_profile_not_exist),
+                            Toast.LENGTH_SHORT
+                        )
                             .show()
                     }
                 } catch (err: Exception) {
@@ -185,13 +200,12 @@ class MyAccountFragment : Fragment() {
                                 var position = Location("")
                                 position.latitude = it.position_latitude
                                 position.longitude = it.position_longitude
-                                val time = convertTime(it.time)
                                 content.add(
                                     SpotModel(
                                         it.pseudo,
                                         it.image,
                                         it.battery,
-                                        time,
+                                        it.time,
                                         position,
                                         it.pressure,
                                         it.brightness,
@@ -200,13 +214,20 @@ class MyAccountFragment : Fragment() {
                                 )
                             }
                             this.view?.findViewById<RecyclerView>(R.id.rvMySpots)?.adapter?.notifyDataSetChanged()
-                            Toast.makeText(requireContext(), "RECU", Toast.LENGTH_SHORT).show()
                         } else {
-                            Toast.makeText(requireContext(), "No more data", Toast.LENGTH_SHORT)
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.no_more_data),
+                                Toast.LENGTH_SHORT
+                            )
                                 .show()
                         }
                     } else {
-                        Toast.makeText(requireContext(), "NON RECU", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.not_received),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 } catch (err: Exception) {
                     System.err.println("On cherche à modifier une vue qui n'est plus affiché " + err)

@@ -1,6 +1,7 @@
 package com.eseo.getmyspot.view.main.adapter
 
 import android.graphics.BitmapFactory
+import android.hardware.SensorManager
 import android.location.Geocoder
 import android.location.Location
 import android.util.Base64
@@ -13,16 +14,18 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.eseo.getmyspot.R
 import com.eseo.getmyspot.data.models.SpotModel
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.*
 
-class HomeSpotsAdapter(private val spots: Array<SpotModel>, private val onClick: () -> Unit) :
+class HomeSpotsAdapter(
+    private val spots: List<SpotModel>,
+    private val onClick: (spotModel: SpotModel) -> Unit
+) :
     RecyclerView.Adapter<HomeSpotsAdapter.ViewHolder>() {
 
     // Comment s'affiche ma vue
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun showItem(spot: SpotModel, onClick: () -> Unit) {
+
+        fun showItem(spot: SpotModel, onClick: (spotModel: SpotModel) -> Unit) {
 
             itemView.findViewById<TextView>(R.id.pseudo).text = spot.pseudo
 
@@ -38,20 +41,23 @@ class HomeSpotsAdapter(private val spots: Array<SpotModel>, private val onClick:
                 itemView.findViewById<ImageView>(R.id.image_spot).setImageBitmap(bitmap);
             }
 
-            itemView.findViewById<TextView>(R.id.battery).text = spot.battery
+            itemView.findViewById<TextView>(R.id.txt_battery).text = spot.battery + "%"
 
-            val timeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
-            val timeFormatted = spot.time.format(timeFormatter)
-            itemView.findViewById<TextView>(R.id.time).text = timeFormatted
+            itemView.findViewById<TextView>(R.id.time).text = spot.time
 
-            itemView.findViewById<TextView>(R.id.position).text = geoCode(spot.position)
+            itemView.findViewById<TextView>(R.id.txt_address).text = geoCode(spot.position)
 
-            itemView.findViewById<TextView>(R.id.pressure).text = spot.pressure
+            itemView.findViewById<TextView>(R.id.txt_altitude).text = SensorManager.getAltitude(
+                SensorManager.PRESSURE_STANDARD_ATMOSPHERE, spot.pressure.toFloat()
+            ).toString() + " " + itemView.context.getString(R.string.metter)
 
-            itemView.findViewById<TextView>(R.id.brightness).text = spot.brightness
+            itemView.findViewById<TextView>(R.id.txt_pressure).text =
+                spot.pressure + " " + itemView.context.getString(R.string.mbar)
+
+            itemView.findViewById<TextView>(R.id.txt_light).text = spot.brightness + " lux"
 
             itemView.findViewById<Button>(R.id.goToSpot).setOnClickListener {
-                onClick()
+                onClick(spot)
             }
         }
 

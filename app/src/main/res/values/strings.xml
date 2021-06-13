@@ -49,4 +49,13 @@
     <string name="require_internet_title">Internet error</string>
     <string name="require_internet_message">You currently do not have access to the internet. This application requires an internet connection to work. Please check your WIFI connection or activate your mobile data.</string>
     <string name="more">More</string>
+    <string name="not_received">Not received</string>
+    <string name="no_more_data">No more data</string>
+    <string name="picture_profile_updated">Profile picture updated</string>
+    <string name="picture_profile_not_updated">Profile picture not updated</string>
+    <string name="picture_profile_not_exist">Profile picture not existed</string>
+    <string name="unable_location">Unable to locate</string>
+    <string name="select_image">Select image</string>
+    <string name="error">Error</string>
+    <string name="password_not_correct">Password not matching</string>
 </resources>
