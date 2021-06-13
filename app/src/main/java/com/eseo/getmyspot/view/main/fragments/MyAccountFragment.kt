@@ -18,6 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.eseo.getmyspot.R
@@ -42,7 +43,7 @@ class MyAccountFragment : Fragment() {
     private val myAccountGetProfilePictureViewModel: MyAccountGetProfilePictureViewModel by viewModel()
     private val content = mutableListOf<SpotModel>()
     private var pageCourante = 0
-    private var pseudo : String? = null
+    private var pseudo: String? = null
 
     companion object {
         fun newInstance() = MyAccountFragment()
@@ -64,7 +65,8 @@ class MyAccountFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        pseudo = LocalPreferences.getInstance(requireContext()).getStringValue(LocalPreferences.PSEUDO)
+        pseudo =
+            LocalPreferences.getInstance(requireContext()).getStringValue(LocalPreferences.PSEUDO)
         setupUi()
     }
 
@@ -82,23 +84,37 @@ class MyAccountFragment : Fragment() {
                 // when click on button more : load more data with a API call
                 findViewById<Button>(R.id.more_data).setOnClickListener {
                     pageCourante++
-                    myAccountSpotsViewModel.doRemoteAction(pseudo, pageCourante*NBELEMENTS, pageCourante*NBELEMENTS+NBELEMENTS, ::onSpotsApiResult)
+                    myAccountSpotsViewModel.doRemoteAction(
+                        pseudo,
+                        pageCourante * NBELEMENTS,
+                        pageCourante * NBELEMENTS + NBELEMENTS,
+                        ::onSpotsApiResult
+                    )
                 }
 
                 // get the image profile
-                myAccountGetProfilePictureViewModel.doRemoteAction(pseudo!!, ::onGetProfilePictureApiResult)
+                myAccountGetProfilePictureViewModel.doRemoteAction(
+                    pseudo!!,
+                    ::onGetProfilePictureApiResult
+                )
 
                 findViewById<ImageView>(R.id.profile_picture).setOnClickListener {
                     openGalleryForImage()
                 }
-                findViewById<RecyclerView>(R.id.rvMySpots).layoutManager = LinearLayoutManager(requireContext())
+                findViewById<RecyclerView>(R.id.rvMySpots).layoutManager =
+                    LinearLayoutManager(requireContext())
                 findViewById<RecyclerView>(R.id.rvMySpots).setNestedScrollingEnabled(false);
 
                 // clear the spots list before displayed it again
                 content.clear()
                 findViewById<RecyclerView>(R.id.rvMySpots)?.adapter?.notifyDataSetChanged()
                 // get spots
-                myAccountSpotsViewModel.doRemoteAction(pseudo, pageCourante*NBELEMENTS, pageCourante*NBELEMENTS+NBELEMENTS, ::onSpotsApiResult)
+                myAccountSpotsViewModel.doRemoteAction(
+                    pseudo,
+                    pageCourante * NBELEMENTS,
+                    pageCourante * NBELEMENTS + NBELEMENTS,
+                    ::onSpotsApiResult
+                )
 
                 findViewById<RecyclerView>(R.id.rvMySpots).adapter = AccountSpotsAdapter(content) {
                     startActivity(
@@ -128,18 +144,27 @@ class MyAccountFragment : Fragment() {
         })
     }
 
-    private fun onGetProfilePictureApiResult(profilePictureResult: GetProfilePictureResult?, isError: Boolean) {
+    private fun onGetProfilePictureApiResult(
+        profilePictureResult: GetProfilePictureResult?,
+        isError: Boolean
+    ) {
         try {
             requireActivity().runOnUiThread {
-                if (!isError && profilePictureResult != null && profilePictureResult.image != null) {
-                    val imageBytes = Base64.decode(profilePictureResult.image, 0)
-                    val image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-                    this.view?.findViewById<ImageView>(R.id.profile_picture)?.setImageBitmap(image)
-                } else {
-                    Toast.makeText(requireContext(), "NO Picture Profile", Toast.LENGTH_SHORT).show()
+                try {
+                    if (!isError && profilePictureResult != null && profilePictureResult.image != null) {
+                        val imageBytes = Base64.decode(profilePictureResult.image, 0)
+                        val image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                        this.view?.findViewById<ImageView>(R.id.profile_picture)
+                            ?.setImageBitmap(image)
+                    } else {
+                        Toast.makeText(requireContext(), "NO Picture Profile", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                } catch (err: Exception) {
+                    System.err.println("On cherche à modifier une vue qui n'est plus affiché " + err)
                 }
             }
-        } catch (err : Exception) {
+        } catch (err: Exception) {
             System.err.println("On cherche à modifier une vue qui n'est plus affiché " + err)
         }
     }
@@ -147,27 +172,41 @@ class MyAccountFragment : Fragment() {
     private fun onSpotsApiResult(spotsResult: GetSpotsResult?, isError: Boolean) {
         try {
             requireActivity().runOnUiThread {
-                if (!isError && spotsResult != null) {
-                    if (spotsResult.list_spots != null) {
-                        spotsResult.list_spots.forEach {
-                            var position = Location("")
-                            position.latitude = it.position_latitude
-                            position.longitude = it.position_longitude
-                            val time = convertTime(it.time)
-                            content.add(SpotModel(it.pseudo, it.image, it.battery, time, position,  it.pressure, it.brightness,
-                                it.image_spot!!
-                            ))
+                try {
+                    if (!isError && spotsResult != null) {
+                        if (spotsResult.list_spots != null) {
+                            spotsResult.list_spots.forEach {
+                                var position = Location("")
+                                position.latitude = it.position_latitude
+                                position.longitude = it.position_longitude
+                                val time = convertTime(it.time)
+                                content.add(
+                                    SpotModel(
+                                        it.pseudo,
+                                        it.image,
+                                        it.battery,
+                                        time,
+                                        position,
+                                        it.pressure,
+                                        it.brightness,
+                                        it.image_spot!!
+                                    )
+                                )
+                            }
+                            this.view?.findViewById<RecyclerView>(R.id.rvMySpots)?.adapter?.notifyDataSetChanged()
+                            Toast.makeText(requireContext(), "RECU", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(requireContext(), "No more data", Toast.LENGTH_SHORT)
+                                .show()
                         }
-                        this.view?.findViewById<RecyclerView>(R.id.rvMySpots)?.adapter?.notifyDataSetChanged()
-                        Toast.makeText(requireContext(), "RECU", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(requireContext(), "No more data", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "NON RECU", Toast.LENGTH_SHORT).show()
                     }
-                } else {
-                    Toast.makeText(requireContext(), "NON RECU", Toast.LENGTH_SHORT).show()
+                } catch (err: Exception) {
+                    System.err.println("On cherche à modifier une vue qui n'est plus affiché " + err)
                 }
             }
-        } catch (err : Exception) {
+        } catch (err: Exception) {
             System.err.println("On cherche à modifier une vue qui n'est plus affiché " + err)
         }
     }
@@ -196,7 +235,7 @@ class MyAccountFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE){
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
             view?.apply {
                 val imageUri = data?.data
                 if (imageUri != null) {
@@ -207,9 +246,13 @@ class MyAccountFragment : Fragment() {
                     bitmap.compress(Bitmap.CompressFormat.PNG, 75, stream)
                     val byteArray: ByteArray = stream.toByteArray()
 
-                    val pseudo = LocalPreferences.getInstance(requireContext()).getStringValue(LocalPreferences.PSEUDO)
+                    val pseudo = LocalPreferences.getInstance(requireContext())
+                        .getStringValue(LocalPreferences.PSEUDO)
                     if (pseudo != null) {
-                        myAccountProfilPictureViewModel.doRemoteAction(pseudo, Base64.encodeToString(byteArray, Base64.DEFAULT))
+                        myAccountProfilPictureViewModel.doRemoteAction(
+                            pseudo,
+                            Base64.encodeToString(byteArray, Base64.DEFAULT)
+                        )
                     }
                 }
             }

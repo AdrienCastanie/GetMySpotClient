@@ -48,4 +48,5 @@
     <string name="add_spot_erro_message">Erreur de serveur, nous ne pouvons pas ajouter votre spot maintenant. Veuillez réessayer plus tard</string>
     <string name="require_internet_title">Erreur interne</string>
     <string name="require_internet_message">Vous n\'avez actuellement pas accès à l\'internet. Cette application nécessite une connexion Internet pour fonctionner. Veuillez vérifier votre connexion WIFI ou activer vos données mobiles.</string>
+    <string name="more">Plus</string>
 </resources>

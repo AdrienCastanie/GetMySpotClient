@@ -126,7 +126,11 @@ class AddSpotFragment : Fragment(), SensorEventListener {
             when (state) {
                 is AddSpotViewModel.CallResult ->
                     if (state.isCorrectlyAdded) {
-                        Toast.makeText(requireContext(), getString(R.string.success), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.success),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         System.out.println(findNavController().currentDestination?.id)
                         if (findNavController().currentDestination?.id == R.id.add_spot) {
                             findNavController().navigate(R.id.action_add_spot_to_my_account)
@@ -212,10 +216,18 @@ class AddSpotFragment : Fragment(), SensorEventListener {
     }
 
     private fun getSensorValues() {
-        getLocalisation()
-        getBatteryPourcentage()
-        sensorManager!!.registerListener(this, sensorPressure, SensorManager.SENSOR_DELAY_NORMAL)
-        sensorManager!!.registerListener(this, sensorLight, SensorManager.SENSOR_DELAY_NORMAL)
+        try {
+            getLocalisation()
+            getBatteryPourcentage()
+            sensorManager!!.registerListener(
+                this,
+                sensorPressure,
+                SensorManager.SENSOR_DELAY_NORMAL
+            )
+            sensorManager!!.registerListener(this, sensorLight, SensorManager.SENSOR_DELAY_NORMAL)
+        } catch (err: Exception) {
+            System.err.println("On cherche à modifier une vue qui n'est plus affiché " + err)
+        }
     }
 
     private fun hasPermissions(): Boolean {

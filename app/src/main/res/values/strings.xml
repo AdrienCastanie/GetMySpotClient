@@ -48,5 +48,5 @@
     <string name="add_spot_erro_message">Server error, we can\'t add your spot now. Please retry later</string>
     <string name="require_internet_title">Internet error</string>
     <string name="require_internet_message">You currently do not have access to the internet. This application requires an internet connection to work. Please check your WIFI connection or activate your mobile data.</string>
-    <string name="more">more</string>
+    <string name="more">More</string>
 </resources>
