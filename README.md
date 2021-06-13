@@ -12,4 +12,11 @@ C'est lieu sont appeller spot dans l'application.
 
 
 ## Informations
+Cette application Android est l'interface de l'utilisateur. Sur cette dernière il peut : 
+* Se créer un compte et s'y connecter
+* Consulter les spots partager par les autres utilisateurs
+* Ajouter un spot
+* Consulter son profil (spot personnel que l'on a partagé)
+
+## Demandes ESEO
 Dans les conseils pour le projet, il était demandé une collecte des données récupéré des capteurs toutes les X seconde. Afin de correspondre au concept de notre application, ces données sont récupéré uniquement lors de la publication d'un nouveau spot (add spot). 
