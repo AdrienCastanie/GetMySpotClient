@@ -27,6 +27,7 @@ import com.eseo.getmyspot.data.models.GetSpotsResult
 import com.eseo.getmyspot.data.models.SpotModel
 import com.eseo.getmyspot.data.preferences.LocalPreferences
 import com.eseo.getmyspot.view.Failed
+import com.eseo.getmyspot.view.account.signin.SigninActivity
 import com.eseo.getmyspot.view.main.adapter.AccountSpotsAdapter
 import com.eseo.getmyspot.view.settings.SettingsActivity
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -79,6 +80,8 @@ class MyAccountFragment : Fragment() {
 
             // if user is connected
             if (pseudo != null) {
+                findViewById<Button>(R.id.more_data).setVisibility(View.VISIBLE)
+                findViewById<Button>(R.id.btn_connection).setVisibility(View.GONE)
                 findViewById<TextView>(R.id.pseudo).text = pseudo
 
                 // when click on button more : load more data with a API call
@@ -126,7 +129,10 @@ class MyAccountFragment : Fragment() {
                 }
             } else {
                 findViewById<Button>(R.id.more_data).setVisibility(View.GONE)
-                // TODO : ADD a button to connect
+                findViewById<Button>(R.id.btn_connection).setVisibility(View.VISIBLE)
+                findViewById<Button>(R.id.btn_connection).setOnClickListener {
+                    startActivity(SigninActivity.getStartIntent(requireContext()))
+                }
             }
         }
 
