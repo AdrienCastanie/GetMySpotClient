@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.eseo.getmyspot.R
 import com.eseo.getmyspot.data.models.SpotModel
-import com.eseo.getmyspot.view.main.adapter.SpotsAdapter
+import com.eseo.getmyspot.view.main.adapter.HomeSpotsAdapter
 import java.time.LocalDateTime
 
 class HomeFragment : Fragment() {
@@ -36,7 +36,7 @@ class HomeFragment : Fragment() {
             var position = Location("position")
             position.longitude = 41.0
             position.latitude = 41.0
-            findViewById<RecyclerView>(R.id.rvSpots).adapter = SpotsAdapter(arrayOf(
+            findViewById<RecyclerView>(R.id.rvSpots).adapter = HomeSpotsAdapter(arrayOf(
             )
             ) {
                 startActivity(

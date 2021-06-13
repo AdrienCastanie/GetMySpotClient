@@ -10,8 +10,6 @@ import com.eseo.getmyspot.R
 import com.eseo.getmyspot.data.preferences.LocalPreferences
 import com.eseo.getmyspot.databinding.ActivitySigninBinding
 import com.eseo.getmyspot.view.Failed
-import com.eseo.getmyspot.view.Loading
-import com.eseo.getmyspot.view.account.signup.CreateAccountViewModel
 import com.eseo.getmyspot.view.account.signup.SignupActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.viewmodel.ext.android.viewModel

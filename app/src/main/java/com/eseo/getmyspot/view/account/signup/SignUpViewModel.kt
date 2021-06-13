@@ -10,7 +10,7 @@ import com.eseo.getmyspot.view.ViewModelState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class CreateAccountViewModel(private val remoteRepository: RemoteRepository) : BaseViewModel() {
+class SignUpViewModel(private val remoteRepository: RemoteRepository) : BaseViewModel() {
     val states = MutableLiveData<ViewModelState>()
 
     fun doRemoteAction(pseudo: String, password: String) {

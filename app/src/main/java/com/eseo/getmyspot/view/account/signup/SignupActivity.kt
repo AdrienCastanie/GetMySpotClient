@@ -18,7 +18,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class SignupActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignupBinding
-    private val createAccountViewModel: CreateAccountViewModel by viewModel()
+    private val signUpViewModel: SignUpViewModel by viewModel()
     private var passwordValidation: Boolean = false
 
     companion object {
@@ -36,10 +36,10 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun setupUi() {
-        createAccountViewModel.states.observe(this, Observer { state ->
+        signUpViewModel.states.observe(this, Observer { state ->
             when (state) {
                 //is Loading -> TODO : peut être mettre un logo de chargement plus tard
-                is CreateAccountViewModel.CallResult ->
+                is SignUpViewModel.CallResult ->
                     if (state.isAccountCreate) {
                         Toast.makeText(this, getString(R.string.success), Toast.LENGTH_SHORT).show()
                         finish()
@@ -65,7 +65,7 @@ class SignupActivity : AppCompatActivity() {
         }
         binding.btnCreateAccount.setOnClickListener {
             if (passwordValidation)
-                createAccountViewModel.doRemoteAction(
+                signUpViewModel.doRemoteAction(
                     binding.txtInputPseudo.text.toString(),
                     binding.txtInputPassword.text.toString()
                 )
