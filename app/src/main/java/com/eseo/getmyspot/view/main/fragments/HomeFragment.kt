@@ -33,6 +33,7 @@ class HomeFragment : Fragment() {
 
     companion object {
         fun newInstance() = HomeFragment()
+        const val NBELEMENTS = 10
     }
 
     override fun onCreateView(
@@ -55,8 +56,8 @@ class HomeFragment : Fragment() {
             findViewById<Button>(R.id.more_data).setOnClickListener {
                 pageCourante++
                 homeSpotsViewModel.doRemoteAction(
-                    pageCourante * MyAccountFragment.NBELEMENTS,
-                    pageCourante * MyAccountFragment.NBELEMENTS + MyAccountFragment.NBELEMENTS,
+                    pageCourante * NBELEMENTS,
+                    pageCourante * NBELEMENTS + NBELEMENTS,
                     ::onSpotsApiResult
                 )
             }
@@ -69,8 +70,8 @@ class HomeFragment : Fragment() {
             findViewById<RecyclerView>(R.id.rvSpots)?.adapter?.notifyDataSetChanged()
             // get spots
             homeSpotsViewModel.doRemoteAction(
-                pageCourante * MyAccountFragment.NBELEMENTS,
-                pageCourante * MyAccountFragment.NBELEMENTS + MyAccountFragment.NBELEMENTS,
+                pageCourante * NBELEMENTS,
+                pageCourante * NBELEMENTS + NBELEMENTS,
                 ::onSpotsApiResult
             )
 
