@@ -17,7 +17,7 @@
     <string name="pressure">10 hPa</string>
     <string name="brightness">1000 lx</string>
     <string name="goToSpot">Go to this Spot</string>
-    <string name="require_connection_title">Internet connection required</string>
+    <string name="require_connection_title">Connection required</string>
     <string name="require_connection_message">You must be logged into your account to access this feature. Please log in.</string>
     <string name="log_in">Log in</string>
     <string name="cancel">cancel</string>
